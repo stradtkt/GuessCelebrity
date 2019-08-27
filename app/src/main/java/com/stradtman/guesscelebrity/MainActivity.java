@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Toast.makeText(getApplicationContext(), "Wrong it was " + celebNames.get(chosenCeleb), Toast.LENGTH_LONG).show();
         }
+        createNewQuestion();
     }
 
     public class ImageDownloader extends AsyncTask<String, Void, Bitmap> {
@@ -116,12 +117,20 @@ public class MainActivity extends AppCompatActivity {
             while(m.find()) {
                 celebNames.add(m.group(1));
             }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        createNewQuestion();
+    }
+    public void createNewQuestion() {
+        Random random = new Random();
+        chosenCeleb = random.nextInt(celebUrl.size());
 
-            Random random = new Random();
-            chosenCeleb = random.nextInt(celebUrl.size());
-
-            ImageDownloader imageTask = new ImageDownloader();
-            Bitmap celebImage;
+        ImageDownloader imageTask = new ImageDownloader();
+        Bitmap celebImage;
+        try {
             celebImage = imageTask.execute(celebUrl.get(chosenCeleb)).get();
             imageView.setImageBitmap(celebImage);
 
@@ -144,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
             button3.setText(answers[3]);
         } catch (InterruptedException e) {
             e.printStackTrace();
-        } catch (ExecutionException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
